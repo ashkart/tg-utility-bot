@@ -44,8 +44,6 @@ const rl = readline.createInterface({
   console.log("You should now be connected.");
   console.log(client.session.save());
 
-  const usersListContext = {usersIdToNameMap: {}};
-
   const me = await client.getMe();
 
   const userWhiteList = await readWhiteList(`./whitelist`);
