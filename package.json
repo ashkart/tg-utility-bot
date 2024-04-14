@@ -1,0 +1,16 @@
+{
+  "name": "tg-utility-bot",
+  "version": "1.0.0",
+  "description": "telegram bot for utility needs",
+  "main": "src/index.js",
+  "repository": "git@github.com:ashkart/tg-utility-bot.git",
+  "author": "ashkart <maxim@oprosso.ru>",
+  "license": "MIT",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "tdl": "^7.4.1"
+  },
+  "devDependencies": {}
+}
