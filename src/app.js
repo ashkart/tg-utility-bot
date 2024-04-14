@@ -35,7 +35,10 @@ const rl = readline.createInterface({
       new Promise((resolve) =>
         rl.question("Please enter the code you received: ", resolve)
       ),
-    onError: (err) => console.log(err)
+    onError: (err) => {
+      console.log(err);
+      client.destroy();
+    }
   });
 
   console.log("You should now be connected.");
