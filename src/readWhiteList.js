@@ -1,5 +1,5 @@
-const fs = require('fs');
-const readline = require('readline');
+import fs from 'fs';
+import readline from 'readline';
 
 async function readWhiteList(fileName) {
   return new Promise((resolve) => {
@@ -40,7 +40,7 @@ async function readAnswer(fileName) {
   })
 }
 
-module.exports = {
+export {
   readWhiteList,
   readAnswer
 }

@@ -1,44 +1,36 @@
-const {getUserAndGroupIdsByChatListUseCase} = require("./getUserAndGroupIdsByChatListUseCase");
-const {getUserNamesByIdsUseCase} = require("./getUserNamesByIdsUseCase");
+import {Api} from "telegram";
 
-async function answerIfNotWhitelistedUseCase(client, me, message, whitelist, usersListContext, answerText) {
-  const senderId = message.sender_id.user_id;
+async function answerIfNotWhitelistedUseCase(client, me, event, whitelist, answerText) {
+  const senderId = event.message._senderId.value;
 
   if (senderId === me.id) {
     return;
   }
 
-  if (!usersListContext.usersIdToNameMap[senderId]) {
-    usersListContext.usersIdToNameMap = await getUserMapIdName(client);
-  }
+  const sender = await event.message.getSender();
 
-  if (!usersListContext.usersIdToNameMap[senderId] || !whitelist.includes(usersListContext.usersIdToNameMap[senderId])) {
-    await client.invoke({
-      _: 'sendMessage',
-      chat_id: message.chat_id,
-      input_message_content: {
-        _: 'inputMessageText',
-        text: {
-          _: 'formattedText',
-          text: answerText
-        }
-      }
-    }).catch(console.error);
+  const user = await getUserById(client, sender.id);
+
+  if (!user.users.some(u => whitelist.includes(u.username)) && !user.users.some(u => whitelist.includes(u.phone))) {
+    await client.invoke(
+      new Api.messages.SendMessage({
+        peer: event._chatPeer,
+        message: answerText,
+        randomId: BigInt("-4156887774564"),
+        noWebpage: true,
+        noforwards: true
+      })
+    );
   }
 }
 
-async function getUserMapIdName(client) {
-  const chats = await client.invoke({
-    _: 'getChats',
-    chat_list: { _: 'chatListMain' },
-    limit: 1000
-  });
-
-  const userAndGroupIds = await getUserAndGroupIdsByChatListUseCase(client, chats.chat_ids);
-
-  return await getUserNamesByIdsUseCase(client, userAndGroupIds.userIds);
+async function getUserById(client, senderId) {
+  return await client.invoke(
+    new Api.users.GetFullUser({id: senderId})
+  );
 }
 
-module.exports = {
-  answerIfNotWhitelistedUseCase
+export {
+  answerIfNotWhitelistedUseCase,
+  getUserById
 }
