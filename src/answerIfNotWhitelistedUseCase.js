@@ -1,7 +1,7 @@
 const {getUserAndGroupIdsByChatListUseCase} = require("./getUserAndGroupIdsByChatListUseCase");
 const {getUserNamesByIdsUseCase} = require("./getUserNamesByIdsUseCase");
 
-async function answerIfNotWhitelistedUseCase(client, me, message, whitelist, usersListContext) {
+async function answerIfNotWhitelistedUseCase(client, me, message, whitelist, usersListContext, answerText) {
   const senderId = message.sender_id.user_id;
 
   if (senderId === me.id) {
@@ -20,7 +20,7 @@ async function answerIfNotWhitelistedUseCase(client, me, message, whitelist, use
         _: 'inputMessageText',
         text: {
           _: 'formattedText',
-          text: 'Dont!'
+          text: answerText
         }
       }
     }).catch(console.error);

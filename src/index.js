@@ -4,7 +4,7 @@ const {getUserAndGroupIdsByChatListUseCase} = require('./getUserAndGroupIdsByCha
 const {getUserNamesByIdsUseCase} = require("./getUserNamesByIdsUseCase");
 const {getGroupNamesByIdsUseCase, getSuperGroupNamesByIdsUseCase} = require("./getGroupNamesByIdsUseCase");
 const {answerIfNotWhitelistedUseCase} = require("./answerIfNotWhitelistedUseCase");
-const {readWhiteList} = require("./readWhiteList");
+const {readWhiteList, readAnswer} = require("./readWhiteList");
 
 const APP_ID = process.env.APP_ID;
 const APP_HASH = process.env.APP_HASH;
@@ -39,13 +39,15 @@ tdl.configure({
 
   const userWhiteList = await readWhiteList(`${__dirname}/../whitelist`);
 
+  const answerText = await readAnswer(`${__dirname}/../answer`);
+
   client.on('update', async update => {
     if (!listenToUpdates.includes(update._)) {
       return;
     }
 
     if (update._ === 'updateNewMessage') {
-      await answerIfNotWhitelistedUseCase(client, me, update.message, userWhiteList, usersListContext);
+      await answerIfNotWhitelistedUseCase(client, me, update.message, userWhiteList, usersListContext, answerText);
     }
   });
 }().catch(console.error));

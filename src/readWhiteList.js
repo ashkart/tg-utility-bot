@@ -1,7 +1,10 @@
+const fs = require('fs');
+const readline = require('readline');
+
 async function readWhiteList(fileName) {
   return new Promise((resolve) => {
-    const lineReader = require('readline').createInterface({
-      input: require('fs').createReadStream(fileName)
+    const lineReader = readline.createInterface({
+      input: fs.createReadStream(fileName)
     });
 
     const whiteListedNames = [];
@@ -17,6 +20,27 @@ async function readWhiteList(fileName) {
   })
 }
 
+async function readAnswer(fileName) {
+  return new Promise((resolve) => {
+    const lineReader = readline.createInterface({
+      input: fs.createReadStream(fileName)
+    });
+
+    let answerText = '';
+
+    lineReader.on('line', function (line) {
+      answerText += `${line}\n`;
+    });
+
+    lineReader.on('close', function () {
+      console.log('Answer text is:\n');
+      console.log(answerText);
+      return resolve(answerText);
+    });
+  })
+}
+
 module.exports = {
-  readWhiteList
+  readWhiteList,
+  readAnswer
 }
